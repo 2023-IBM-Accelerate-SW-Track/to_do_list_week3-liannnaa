@@ -19,8 +19,22 @@ afterEach(() => {
 
 
 
- test('test that App component doesn\'t render dupicate Task', () => {
+test('App component doesn\'t render duplicate Task', async () => {
   render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByRole('textbox', {name: /Due Date/i});
+  const addButton = screen.getByRole('button', {name: /Add/i});
+
+  fireEvent.change(inputTask, { target: { value: 'Test' } });
+  fireEvent.change(inputDate, { target: { value: '6/30/23'}});
+  fireEvent.click(addButton);
+
+  fireEvent.change(inputTask, { target: { value: 'Test' } });
+  fireEvent.change(inputDate, { target: { value: '6/30/23'}});
+  fireEvent.click(addButton);
+
+  const items = await screen.findAllByText('Test');
+  expect(items.length).toBe(1);
  });
 
  test('test that App component doesn\'t add a task without task name', () => {
