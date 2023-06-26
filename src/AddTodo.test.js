@@ -65,9 +65,32 @@ test('App component doesn\'t render duplicate Task', async () => {
 
  test('App component can be deleted thru checkbox', () => {
   render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByRole('textbox', {name: /Due Date/i});
+  const addButton = screen.getByRole('button', {name: /Add/i});
+
+  fireEvent.change(inputTask, { target: { value: 'Test' } });
+  fireEvent.change(inputDate, { target: { value: '6/30/23'}});
+  fireEvent.click(addButton);
+
+  const checkbox = screen.getByRole('checkbox');
+  fireEvent.click(checkbox);
+
+  const noItemsText = screen.getByText("You have no todo's left");
+  expect(noItemsText).toBeInTheDocument();
  });
 
 
  test('App component renders different colors for past due events', () => {
   render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByRole('textbox', {name: /Due Date/i});
+  const addButton = screen.getByRole('button', {name: /Add/i});
+
+  fireEvent.change(inputTask, { target: { value: 'Test' } });
+  fireEvent.change(inputDate, { target: { value: '01/01/0001'}});
+  fireEvent.click(addButton);
+
+  const testCheck = screen.getByTestId(/Test/i).style.background;
+  expect(testCheck).toBe("rgb(255, 0, 0)");
  });
